@@ -1,0 +1,169 @@
+###########################   admin routes   #################
+
+### admin login
+POST http://localhost:8080/api/admin/login
+Content-Type: application/json
+
+{  
+   "email": "admin@gmail.com",
+   "password": "123456"
+}
+
+###  admin logout
+DELETE http://localhost:8080/api/admin/logout
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWUyN2EwOThkNjZhZjQ5YmVmMDM2YzEiLCJpYXQiOjE1OTIwNTQ2NDUsImV4cCI6MTU5MjE0MTA0NX0.zJQDgJdb98X2OoTs6auEDPBOn-o7BSgsP7p8tqAYMJ4
+
+### admin forgot password
+PATCH  http://localhost:8080/api/admin/forgot-password
+Content-Type: application/json
+
+{  
+   "email": "admin@gmail.com",
+   "mobile": "9123456789"
+}
+
+### admin change password
+PATCH  http://localhost:8080/api/admin/change-password
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWUyN2EwOThkNjZhZjQ5YmVmMDM2YzEiLCJpYXQiOjE1OTIwNTQ2NDUsImV4cCI6MTU5MjE0MTA0NX0.zJQDgJdb98X2OoTs6auEDPBOn-o7BSgsP7p8tqAYMJ4
+
+{  
+   "currentPassword": "69149957",
+   "newPassword": "123456"
+}
+
+
+### admin creating customer account
+POST http://localhost:8080/api/admin/create-customer-account
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWUyN2EwOThkNjZhZjQ5YmVmMDM2YzEiLCJpYXQiOjE1OTIwNTQ2NDUsImV4cCI6MTU5MjE0MTA0NX0.zJQDgJdb98X2OoTs6auEDPBOn-o7BSgsP7p8tqAYMJ4
+
+{  
+   "name": "harish",
+   "email": "harishponna55@gmail.com",
+   "password": "123456",
+   "studioName":"harish studios",
+   "mobile":"9123456789",
+   "address":"hyderabad"
+}
+
+### admin clciking on create order
+GET http://localhost:8080/api/admin/get-customer-ids
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWUyN2EwOThkNjZhZjQ5YmVmMDM2YzEiLCJpYXQiOjE1OTIwNTQ2NDUsImV4cCI6MTU5MjE0MTA0NX0.zJQDgJdb98X2OoTs6auEDPBOn-o7BSgsP7p8tqAYMJ4
+
+### admin creating order
+POST http://localhost:8080/api/admin/create-order
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWUyN2EwOThkNjZhZjQ5YmVmMDM2YzEiLCJpYXQiOjE1OTIwNTQ2NDUsImV4cCI6MTU5MjE0MTA0NX0.zJQDgJdb98X2OoTs6auEDPBOn-o7BSgsP7p8tqAYMJ4
+
+{  
+   "customerId": "5ee3c1dd1c9d723160827d7c",
+   "titleOfOrder": "anniversary in hyd",
+   "typeOfOrder": "anniversary",
+   "description": "should make a beautiful video editing",
+   "outPutFormat":"blu-ray",
+   "estimatedDateOfCompletion":"22-06-2020",
+   "allotedEmployee":"raj",
+   "totalAmountInINR":"30000",
+   "advanceAmountInINR":"10000",
+   "status":"not_started",
+   "isPaymentCompleted":"true"
+}
+
+### admin view order
+GET http://localhost:8080/api/admin/view-order/5ee3c2e71c9d723160827d7f
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWUyN2EwOThkNjZhZjQ5YmVmMDM2YzEiLCJpYXQiOjE1OTIwNTQ2NDUsImV4cCI6MTU5MjE0MTA0NX0.zJQDgJdb98X2OoTs6auEDPBOn-o7BSgsP7p8tqAYMJ4
+
+### admin updating order
+PATCH http://localhost:8080/api/admin/update-order/5ee3c3731c9d723160827d83
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWUyN2EwOThkNjZhZjQ5YmVmMDM2YzEiLCJpYXQiOjE1OTIwNTQ2NDUsImV4cCI6MTU5MjE0MTA0NX0.zJQDgJdb98X2OoTs6auEDPBOn-o7BSgsP7p8tqAYMJ4
+
+{  
+   "status": "started",
+   "isPaymentCompleted":"false"
+}
+
+### admin filtering orders
+GET http://localhost:8080/api/admin/filter-orders?status=cancelled
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWUyN2EwOThkNjZhZjQ5YmVmMDM2YzEiLCJpYXQiOjE1OTIwNTQ2NDUsImV4cCI6MTU5MjE0MTA0NX0.zJQDgJdb98X2OoTs6auEDPBOn-o7BSgsP7p8tqAYMJ4
+
+### admin payment done and order  completed 
+GET http://localhost:8080/api/admin/payment-done-and-completed-orders
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWUyN2EwOThkNjZhZjQ5YmVmMDM2YzEiLCJpYXQiOjE1OTIwNTQ2NDUsImV4cCI6MTU5MjE0MTA0NX0.zJQDgJdb98X2OoTs6auEDPBOn-o7BSgsP7p8tqAYMJ4
+
+### admin all customers
+GET http://localhost:8080/api/admin/all-customers
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWUyN2EwOThkNjZhZjQ5YmVmMDM2YzEiLCJpYXQiOjE1OTIwNTQ2NDUsImV4cCI6MTU5MjE0MTA0NX0.zJQDgJdb98X2OoTs6auEDPBOn-o7BSgsP7p8tqAYMJ4
+
+### admin searching customers by studio name
+POST http://localhost:8080/api/admin/search/customers-by-studio-name?studioName=
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWUyN2EwOThkNjZhZjQ5YmVmMDM2YzEiLCJpYXQiOjE1OTIwNTQ2NDUsImV4cCI6MTU5MjE0MTA0NX0.zJQDgJdb98X2OoTs6auEDPBOn-o7BSgsP7p8tqAYMJ4
+
+### admin customer orders
+GET http://localhost:8080/api/admin/customer-orders/5ee3c1dd1c9d723160827d7c
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWUyN2EwOThkNjZhZjQ5YmVmMDM2YzEiLCJpYXQiOjE1OTIwNTQ2NDUsImV4cCI6MTU5MjE0MTA0NX0.zJQDgJdb98X2OoTs6auEDPBOn-o7BSgsP7p8tqAYMJ4
+
+### admin searching orders
+GET http://localhost:8080/api/admin/search/orders?titleOfOrder=
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWUyN2EwOThkNjZhZjQ5YmVmMDM2YzEiLCJpYXQiOjE1OTIwNTQ2NDUsImV4cCI6MTU5MjE0MTA0NX0.zJQDgJdb98X2OoTs6auEDPBOn-o7BSgsP7p8tqAYMJ4
+
+
+
+
+############################   customer routes   #######################
+
+### customer login
+POST http://localhost:8080/api/customer/login
+Content-Type: application/json
+
+{  
+   "email": "harishponna55@gmail.com",
+   "password": "96664271"
+}
+
+
+###  customer logout
+DELETE http://localhost:8080/api/customer/logout
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWUzYzFkZDFjOWQ3MjMxNjA4MjdkN2MiLCJpYXQiOjE1OTE5ODU5NjEsImV4cCI6MTU5MjA3MjM2MX0.U0yLdWChME1wE_LISw5x1TTN6Z105Ysze4y5iYeCaPc
+
+### customer forgot password
+PATCH  http://localhost:8080/api/customer/forgot-password
+Content-Type: application/json
+
+{  
+   "email": "harishponna55@gmail.com",
+   "mobile": "9123456789"
+}
+
+
+### customer change password
+PATCH  http://localhost:8080/api/customer/change-password
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWUzYzFkZDFjOWQ3MjMxNjA4MjdkN2MiLCJpYXQiOjE1OTE5ODU5NjEsImV4cCI6MTU5MjA3MjM2MX0.U0yLdWChME1wE_LISw5x1TTN6Z105Ysze4y5iYeCaPc
+
+{  
+   "currentPassword": "96664271",
+   "newPassword": "123456"
+}
+
+### customer all viewing orders
+GET http://localhost:8080/api/customer/orders
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWUzYzFkZDFjOWQ3MjMxNjA4MjdkN2MiLCJpYXQiOjE1OTE5ODU5NjEsImV4cCI6MTU5MjA3MjM2MX0.U0yLdWChME1wE_LISw5x1TTN6Z105Ysze4y5iYeCaPc
+
+### customer view single order
+GET http://localhost:8080/api/customer/view-order/5ee3c3731c9d723160827d83
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWUzYzFkZDFjOWQ3MjMxNjA4MjdkN2MiLCJpYXQiOjE1OTE5ODU5NjEsImV4cCI6MTU5MjA3MjM2MX0.U0yLdWChME1wE_LISw5x1TTN6Z105Ysze4y5iYeCaPc
+
