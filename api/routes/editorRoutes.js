@@ -3,67 +3,66 @@ const router = require("express").Router();
 
 // controllers
 const {
-    login,
-    register,
-    forgotPassword,
-    changePassword, 
-    createCustomerAccount,
-    updateOrder,
-    customerOfficeNames,
-    filterEditors,
-    searchEditors,
-    viewSingleEditor,
-    updateEditor,
-    logout
+    editorLogin,
+    editorRegister,
+    editorForgotPassword,
+    editorChangePassword,
+    editorLogout,
+    editorCreateCustomerAccount,
+    editorCustomerOfficeNames,
+    editorCreateOrder,
+    editorViewSingleOrder,
+    editorUpdateOrder,
+    editorFilterOrders,
+    editorSearchOrders,
+    editorPaymentDoneAndCompletedOrders,
+    editorFilterCustomers,
+    editorSearchCustomers,
+    editorViewSingleCustomer,
+    editorRemoveCustomer,
+    editorCustomerOrders,
+
 } = require("../controllers/editorControllers")
 
 // middlewares
 const { authenticateEditor } = require("../middlewares/authenticate")
 const { registrationValidation } = require("../middlewares/validations")
 
+
+
 // --------------------------get route------------------------------------------
-router.get(`/api/ediitor/get-customer-ids`, authenticateEditor, customerOfficeNames)
+
+router.get(`/api/ediitor/get-customer-ids`, authenticateEditor, editorCustomerOfficeNames)
+router.get(`/api/editor/filter-orders`, authenticateEditor,
+    editorFilterOrders) //?status = not_started || started || completed || cancelled
+router.get(`/api/editor/payment-done-and-completed-orders`, authenticateEditor, editorPaymentDoneAndCompletedOrders)
+router.get(`/api/edior/filter-customers`, authenticateEditor, editorFilterCustomers)//?status=active || blocked
+router.get(`/api/edior/view-single-customer/:customerId`, authenticateEditor, editorViewSingleCustomer)
+router.get(`/api/admin/search/customers-by-office-name`, authenticateEditor, editorSearchCustomers)//?studioName = ${query}
+router.get(`/api/admin/customer-orders/:customerId`, authenticateEditor, editorCustomerOrders)
+router.get(`/api/admin/search/orders-by-title`, authenticateEditor, editorSearchOrders) // ?titleOfOrder =  ${query} 
+router.get(`/api/admin/view-single-order/:orderId`, authenticateEditor, editorViewSingleOrder)
+
 
 
 // --------------------------post routes------------------------------------------
-router.post(`/api/editor/register`, registrationValidation, register);
-router.post(`/api/editor/login`, login);
-router.post(`/api/editor/create-customer-account`, authenticateEditor, registrationValidation, createCustomerAccount);
-router.post(`/api/editor/create-order`, authenticateEditor, orderValidation, createOrder);
+router.post(`/api/editor/register`, registrationValidation, editorRgister);
+router.post(`/api/editor/login`, editorLogin);
+router.post(`/api/editor/create-customer-account`, authenticateEditor, registrationValidation, editorCreateCustomerAccount);
+router.post(`/api/editor/create-order`, authenticateEditor, orderValidation, editorCreateOrder);
+
 
 
 // --------------------------update routes------------------------------------------
-router.patch(`/api/editor/forgot-password`, forgotPassword)
-router.patch(`/api/editor/change-password`, authenticateEditor, changePassword)
-router.patch(`/api/editor/update-order/:orderId`, authenticateEditor, updateOrder)
+router.patch(`/api/editor/forgot-password`, editorForgotPassword)
+router.patch(`/api/editor/change-password`, authenticateEditor, editorChangePassword)
+router.patch(`/api/editor/update-order/:orderId`, authenticateEditor, editorUpdateOrder)
 
 
 
+// --------------------------delete routes------------------------------------------
+router.delete(`/api/edior/remove-customer/:customerId`, authenticateEditor, editorRemoveCustomer)
+router.delete(`/api/editor/logout`, authenticateEditor, editorLogout);
 
 
 
-
-
-
-
-
-
-// --------------------------get route------------------------------------------
-
-router.get(`/api/admin/filter-orders`, authenticateAdmin, admin.adminFilterOrders) //?status = not_started || started || completed || cancelled
-
-router.get(`/api/admin/payment-done-and-completed-orders`, authenticateAdmin, admin.adminPaymentDoneAndCompletedOrders)
-
-router.get(`/api/admin/all-customers`, authenticateAdmin, admin.adminAllCustomers)
-
-router.get(`/api/admin/search/customers-by-studio-name`, authenticateAdmin, admin.adminSearchCustomers)//?studioName = ${query}
-
-router.get(`/api/admin/customer-orders/:customerId`, authenticateAdmin, admin.adminStudioOrders)
-
-router.get(`/api/admin/search/orders`, authenticateAdmin, admin.adminSearchOrders) // ?titleOfOrder =  ${} 
-
-router.get(`/api/admin/view-order/:orderId`, authenticateAdmin, admin.adminViewOrder)
-
-
-
-router.delete(`/api/admin/logout`, authenticateAdmin, admin.adminLogout);

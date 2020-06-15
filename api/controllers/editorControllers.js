@@ -8,7 +8,7 @@ const Order = require("../models/Order")
 const [{ sign }, { hash, compare }] = [require("jsonwebtoken"), require("bcryptjs")]
 
 module.exports = {
-    async register(req, res) {
+    async editorRegister(req, res) {
         try {
             var { name, email, password, officeName, mobile, address } = req.body
             mobile = Number(mobile)
@@ -25,7 +25,7 @@ module.exports = {
         }
     },
 
-    async login(req, res) {
+    async editorLogin(req, res) {
         try {
             var email = req.body.email;
             var password = req.body.password;
@@ -52,7 +52,7 @@ module.exports = {
             return res.json({ error: error.message })
         }
     },
-    async forgotPassword(req, res) {
+    async editorForgotPassword(req, res) {
         try {
             const email = req.body.email
             const mobile = Number(req.body.mobile)
@@ -70,7 +70,7 @@ module.exports = {
             return res.json({ error: error.message })
         }
     },
-    async changePassword(req, res) {
+    async editorChangePassword(req, res) {
         try {
             const currentPassword = req.body.currentPassword
             const newPassword = req.body.newPassword
@@ -83,8 +83,16 @@ module.exports = {
             return res.status(500).send({ error: error.message })
         }
     },
+    async editorLogout(req, res) {
+        try {
+            await Editor.findOneAndUpdate({ _id: req.editor._id }, { jasonWebToken: null })
+            return res.json({ data: [{ message: "editor successfully logged out" }] });
+        } catch (error) {
+            res.status(404).send({ error: error.message })
+        }
+    },
 
-    async createCustomerAccount(req, res) {
+    async editorCreateCustomerAccount(req, res) {
         try {
             var { name, email, password, officeName, mobile, address } = req.body
             mobile = Number(mobile)
@@ -111,7 +119,7 @@ module.exports = {
             return res.json({ error: `${error.message}` });
         }
     },
-    async createOrder(req, res) {
+    async editorCreateOrder(req, res) {
         try {
             var { customerId, titleOfOrder, typeOfOrder, outPutFormat, estimatedDateOfCompletion, allotedEmployee, description, totalAmountInINR, advanceAmountInINR, status, isPaymentCompleted } = req.body
             totalAmountInINR = Number(totalAmountInINR)
@@ -123,12 +131,12 @@ module.exports = {
             return res.json({ error: error.message })
         }
     },
-    async updateOrder(req, res) {
+    async editorUpdateOrder(req, res) {
         try {
             const orderId = req.params.orderId
             var status = req.body.status
             var isPaymentCompleted = req.body.isPaymentCompleted
-            const order = await Order.findOne({ _id: orderId, editorId:req.editor_id })
+            const order = await Order.findOne({ _id: orderId, editorId: req.editor._id })
             if (status == "") status = order.status
             if (isPaymentCompleted == "") isPaymentCompleted = order.isPaymentCompleted
             order.status = status
@@ -140,9 +148,9 @@ module.exports = {
         }
     },
 
-    async customerOfficeNames(req, res) {
+    async editorCustomerOfficeNames(req, res) {
         try {
-            const customers = await Customer.find({editors: req.editor._id}).sort({ officeName: 1 })
+            const customers = await Customer.find({ editors: req.editor._id }).sort({ officeName: 1 })
             const count = customers.length
             var customerOfficeNames = []
             customers.forEach(ele => {
@@ -155,27 +163,15 @@ module.exports = {
         }
     },
 
-
-
-
-
-
-
-
-
-
-
-    // admin filtering orders
-
-    async adminFilterOrders(req, res) {
+    async editorFilterOrders(req, res) {
         try {
             if (req.query.status == "completed") {
-                const orders = await Order.find({ status: `${req.query.status}`, isPaymentCompleted: "false" }).sort({ createdAt: -1 })
+                const orders = await Order.find({ status: req.query.status, isPaymentCompleted: "false", editorId: req.editor._id }).sort({ createdAt: -1 })
                 const count = orders.length
                 return res.json({ data: orders, count })
             }
             else {
-                const orders = await Order.find({ status: `${req.query.status}` }).sort({ createdAt: -1 })
+                const orders = await Order.find({ status: req.query.status, editorId: req.editor._id }).sort({ createdAt: -1 })
                 const count = orders.length
                 return res.json({ data: orders, count })
             }
@@ -184,10 +180,10 @@ module.exports = {
             return res.json({ error: error.message })
         }
     },
-    // adminPaymentDoneAndCompletedOrders
-    async adminPaymentDoneAndCompletedOrders(req, res) {
+
+    async editorPaymentDoneAndCompletedOrders(req, res) {
         try {
-            const orders = await Order.find({ isPaymentCompleted: `true`, status: `completed` }).sort({ createdAt: -1 })
+            const orders = await Order.find({ isPaymentCompleted: `true`, status: `completed`, editorId: req.editor._id }).sort({ createdAt: -1 })
             const count = orders.length
             return res.json({ data: orders, count })
         }
@@ -195,10 +191,10 @@ module.exports = {
             return res.json({ error: error.message })
         }
     },
-    // admin all studios
-    async adminAllCustomers(req, res) {
+
+    async editorFilterCustomers(req, res) {
         try {
-            const customers = await Customer.find({}).sort({ studioName: 1 })
+            const customers = await Customer.find({ status: req.query.status, editorId: req.editor._id }).sort({ createdAt: -1 })
             const count = customers.length
             return res.json({ data: customers, count })
         }
@@ -206,25 +202,49 @@ module.exports = {
             return res.json({ error: error.message })
         }
     },
-    // admin searching studios
-    async adminSearchCustomers(req, res) {
-        try {
-            const studioName = req.query.studioName
-            const studios = await Customer.find({ studioName: { $regex: `${studioName}`, $options: "i" } }).sort({ studioName: 1 })
-            const count = studios.length
-            return res.json({ data: studios, count })
-        }
-        catch (error) {
-            return res.json({ error: error.message })
-        }
-    },
 
-
-    // admin studio orders
-    async adminStudioOrders(req, res) {
+    async editorViewSingleCustomer(req, res) {
         try {
             const customerId = req.params.customerId
-            const orders = await Order.find({ customerId }).sort({ createdAt: -1 })
+            const customer = await Editor.findOne({ _id: customerId, editors: editorId })
+            return res.json({ data: [editor], count: 1 })
+        }
+        catch (error) {
+            return res.json({ error: error.message })
+        }
+    },
+    async editorRemoveCustomer(req, res) {
+        try {
+            const customerId = req.query.customerId
+            const customer = await Customer.findOne({ _id: customerId, editors: req.editor._id })
+            const index = (customer.editors).indexOf(`${req.editor._id}`)
+                (customer.editors).splice(index, 1)
+            customer.save()
+            const editor = await Editor.findOne({ _id: req.editor._id })
+            const index = (editor.customers).indexOf(customerId)
+                (editor.customers).splice(index, 1)
+            editor.save()
+            return res.json({ message: "customer removed successfully" })
+        } catch (error) {
+            return res.status(500).send({ error: error.message })
+        }
+    },
+    async editorSearchCustomers(req, res) {
+        try {
+            const officeName = req.query.officeName
+            const customer = await Customer.find({ officeName: { $regex: `${officeName}`, $options: "i" }, editors: req.editor._id }).sort({ officeName: 1 })
+            const count = customer.length
+            return res.json({ data: customers, count })
+        }
+        catch (error) {
+            return res.json({ error: error.message })
+        }
+    },
+
+    async editorCustomerOrders(req, res) {
+        try {
+            const customerId = req.params.customerId
+            const orders = await Order.find({ customerId, editorId: req.editor._id }).sort({ createdAt: -1 })
             const count = orders.length
             return res.json({ data: orders, count })
         }
@@ -233,11 +253,10 @@ module.exports = {
         }
     },
 
-    // admin searching orders
-    async adminSearchOrders(req, res) {
+    async editorSearchOrders(req, res) {
         try {
             const titleOfOrder = req.query.titleOfOrder
-            const orders = await Order.find({ titleOfOrder: { $regex: `${titleOfOrder}`, $options: "i" } }).sort({ createdAt: -1 })
+            const orders = await Order.find({ titleOfOrder: { $regex: `${titleOfOrder}`, $options: "i" }, editorId: req.editor._id }).sort({ createdAt: -1 })
             const count = orders.length
             return res.json({ data: orders, count })
         }
@@ -246,38 +265,14 @@ module.exports = {
         }
     },
 
-
-    // admin view order
-    async adminViewOrder(req, res) {
+    async editorViewSingleOrder(req, res) {
         try {
             const orderId = req.params.orderId
-            const order = await Order.findOne({ _id: orderId })
+            const order = await Order.findOne({ _id: orderId, editorId: req.editor._id })
             return res.json({ data: [order], count: 1 })
         }
         catch (error) {
             return res.json({ error: error.message })
         }
     },
-
-
-    // admin create order
-
-    //--------------------admin controllers
-    // forgot password
-
-
-
-
-    // admin udpate order
-
-    // admin logout
-    async adminLogout(req, res) {
-        try {
-            await Admin.findOneAndUpdate({ _id: req.admin._id }, { jasonWebToken: null })
-            return res.json({ data: [{ message: "admin successfully logged out" }] });
-        } catch (error) {
-            res.status(404).send({ error: error.message })
-        }
-    },
-
 }

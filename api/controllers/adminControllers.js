@@ -9,7 +9,7 @@ const Order = require("../models/Order")
 
 
 module.exports = {
-    async login(req, res) {
+    async adminLogin(req, res) {
         try {
             var email = req.body.email;
             var password = req.body.password;
@@ -31,7 +31,7 @@ module.exports = {
             return res.json({ error: error.message })
         }
     },
-    async filterEditors(req, res) {
+    async adminFilterEditors(req, res) {
         try {
             const editors = await Editor.find({ status: `${req.query.status}` }).sort({ createdAt: -1 })
             const count = editors.length
@@ -41,7 +41,7 @@ module.exports = {
             return res.json({ error: error.message })
         }
     },
-    async searchEditors(req, res) {
+    async adminSearchEditors(req, res) {
         try {
             const officeName = req.query.officeName
             const editors = await Editor.find({ officeName: { $regex: `${officeName}`, $options: "i" } }).sort({ officeName: 1 })
@@ -53,7 +53,7 @@ module.exports = {
         }
     },
 
-    async viewSingleEditor(req, res) {
+    async adminViewSingleEditor(req, res) {
         try {
             const editorId = req.params.editorId
             const editor = await Editor.findOne({ _id: editorId })
@@ -63,7 +63,7 @@ module.exports = {
             return res.json({ error: error.message })
         }
     },
-    async updateEditor(req, res) {
+    async adminUpdateEditor(req, res) {
         try {
             const editorId = req.query.editorId
             var status = req.query.status
@@ -73,7 +73,7 @@ module.exports = {
             return res.status(500).send({ error: error.message })
         }
     },
-    async forgotPassword(req, res) {
+    async adminForgotPassword(req, res) {
         try {
             const email = req.body.email
             const mobile = Number(req.body.mobile)
@@ -92,7 +92,7 @@ module.exports = {
         }
     },
     
-    async changePassword(req, res) {
+    async adminChangePassword(req, res) {
         try {
             const currentPassword = req.body.currentPassword
             const newPassword = req.body.newPassword
@@ -106,7 +106,7 @@ module.exports = {
         }
     },
 
-    async logout(req, res) {
+    async adminLogout(req, res) {
         try {
             await Admin.findOneAndUpdate({ _id: req.admin._id }, { jsonWebToken: null })
             return res.json({ data: [{ message: "admin logged out successfully" }] });

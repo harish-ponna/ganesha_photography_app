@@ -1,17 +1,46 @@
 const router = require("express").Router();
-const customerControllers = require("../controllers/customerControllers")
-const { authenticateAdmin, authenticateCustomer } = require("../middlewares/authenticate")
+const {
+    customerLogin,
+    customerForgotPassword,
+    customerChangePassword,
+    customerLogout,
+    customerOrdersInEditor,
+    customerSearchOrders,
+    customerViewSingleOrder,
+
+} = require("../controllers/customerControllers")
+const { authenticateCustomer } = require("../middlewares/authenticate")
 
 
-router.get(`/api/customer/orders`, authenticateCustomer,getControllers.customerOrders)
+
+//------------------------------get routes------------------------- 
+
+router.get(`/api/customer/orders-in-specific-editor/:editorId`, authenticateCustomer,  customerOrdersInEditor)
+router.get(`/api/customer/search/orders-by-title`, authenticateCustomer,  customerSearchOrders)//?titleOfOrder={query}
+router.get(`/api/customer/view-single-order/:orderId`, authenticateCustomer,  customerViewSingleOrder)
 
 
-router.get(`/api/customer/view-order/:orderId`, authenticateCustomer,getControllers.customerViewOrder)
-router.post(`/api/customer/login`, postControllers.customerLogin)
-router.patch(`/api/customer/forgot-password`, updateControllers.customerForgotPassword) 
-router.patch(`/api/customer/change-password`, authenticateCustomer, updateControllers.customerChangePassword) 
+//------------------------------post routes------------------------- 
 
-router.delete(`/api/customer/logout`, authenticateCustomer, deleteControllers.customerLogout);
+router.post(`/api/customer/login`, customerLogin)
+
+
+//------------------------------update routes------------------------- 
+
+router.patch(`/api/customer/forgot-password`, customerForgotPassword) 
+router.patch(`/api/customer/change-password`, authenticateCustomer, customerChangePassword) 
+
+
+//------------------------------delete routes------------------------- 
+
+router.delete(`/api/customer/logout`, authenticateCustomer, customerLogout);
+
+
+
+
+
+
+
 
 
 module.exports = router;
