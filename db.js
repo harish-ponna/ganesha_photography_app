@@ -1,9 +1,11 @@
 //NPM packages
-const [{connect} = require("mongoose");
+const {connect,set} = require("mongoose");
 
 // ENV
 const { MONGODB_URI } = process.env;
 
+
+set('useFindAndModify', false);
 // DB Conncetion
 (async () => {
   try {

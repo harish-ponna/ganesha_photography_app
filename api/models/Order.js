@@ -51,6 +51,7 @@ const orderSchema = new Schema({
     },
     status: {
         type: String,
+        default:"not_started",
         enum:["not_started","started","completed","cancelled"]
     },
 

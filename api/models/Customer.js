@@ -27,12 +27,6 @@ const CustomerSchema = new Schema({
     type: String,
     required: true
   },
-  status: {
-    type: String,
-    required: true,
-    default:"active",
-    enum: ["active", "blocked"]
-  },
 
   editors:[String],
 

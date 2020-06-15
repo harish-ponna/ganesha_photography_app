@@ -7,6 +7,7 @@ const {
     customerOrdersInEditor,
     customerSearchOrders,
     customerViewSingleOrder,
+    customerAllEditors
 
 } = require("../controllers/customerControllers")
 const { authenticateCustomer } = require("../middlewares/authenticate")
@@ -15,6 +16,7 @@ const { authenticateCustomer } = require("../middlewares/authenticate")
 
 //------------------------------get routes------------------------- 
 
+router.get(`/api/customer/all-editors`, authenticateCustomer,  customerAllEditors)
 router.get(`/api/customer/orders-in-specific-editor/:editorId`, authenticateCustomer,  customerOrdersInEditor)
 router.get(`/api/customer/search/orders-by-title`, authenticateCustomer,  customerSearchOrders)//?titleOfOrder={query}
 router.get(`/api/customer/view-single-order/:orderId`, authenticateCustomer,  customerViewSingleOrder)
@@ -34,11 +36,6 @@ router.patch(`/api/customer/change-password`, authenticateCustomer, customerChan
 //------------------------------delete routes------------------------- 
 
 router.delete(`/api/customer/logout`, authenticateCustomer, customerLogout);
-
-
-
-
-
 
 
 

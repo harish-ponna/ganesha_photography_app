@@ -1,6 +1,5 @@
 // NPM package
-const {Schema,model} = require("mongoose");
-const { request } = require("express");
+const [{ Schema, model }, { tz }] = [require("mongoose"), require('moment-timezone')]
 
 // Schema
 const EditorSchema = new Schema({
@@ -31,16 +30,16 @@ const EditorSchema = new Schema({
   status: {
     type: String,
     required: true,
-    default:"requested",
+    default: "requested",
     enum: ["requested", "active", "blocked"]
   },
-  
-  customers:[String],
+
+  customers: [String],
 
   jsonWebToken: {
     type: String,
-    required: false
   },
+
 }, { timestamps: true });
 
 const Editor = model("editor", EditorSchema);

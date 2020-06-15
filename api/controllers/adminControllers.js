@@ -1,12 +1,13 @@
-// NPM packages
-const [{ sign }, { compare }] = [require("jsonwebtoken", require("bcryptjs"))]
-
 // Models
 const Admin = require("../models/Admin")
 const Editor = require("../models/Editor")
-const Customer = require("../models/Customer")
-const Order = require("../models/Order")
 
+// Utils
+const { forgotPasswordMailing } = require("../utils/nodeMailer")
+const { findById } = require("../models/Admin")
+
+// NPM packages
+const [{ sign }, { hash, compare }] = [require("jsonwebtoken"), require("bcryptjs")]
 
 module.exports = {
     async adminLogin(req, res) {
@@ -35,7 +36,16 @@ module.exports = {
         try {
             const editors = await Editor.find({ status: `${req.query.status}` }).sort({ createdAt: -1 })
             const count = editors.length
-            return res.json({ data: editors, count })
+            const newEditors = []
+            editors.forEach(ele => {
+                newEditorsObj = ele.toObject()
+                delete newEditorsObj.password
+                delete newEditorsObj.__v
+                delete newEditorsObj.customers
+                delete newEditorsObj.jsonWebToken
+                newEditors.push(newEditorsObj)
+            })
+            return res.json({ data: newEditors, count })
         }
         catch (error) {
             return res.json({ error: error.message })
@@ -44,7 +54,7 @@ module.exports = {
     async adminSearchEditors(req, res) {
         try {
             const officeName = req.query.officeName
-            const editors = await Editor.find({ officeName: { $regex: `${officeName}`, $options: "i" } }).sort({ officeName: 1 })
+            const editors = await Editor.find({ officeName: { $regex: `${officeName}`, $options: "i" } }, { password: 0, __v: 0, customer: 0, jsonWebToken: 0 }).sort({ officeName: 1 })
             const count = editors.length
             return res.json({ data: editors, count })
         }
@@ -56,7 +66,7 @@ module.exports = {
     async adminViewSingleEditor(req, res) {
         try {
             const editorId = req.params.editorId
-            const editor = await Editor.findOne({ _id: editorId })
+            const editor = await Editor.findOne({ _id: editorId }, { password: 0, __v: 0, customer: 0, jsonWebToken: 0 })
             return res.json({ data: [editor], count: 1 })
         }
         catch (error) {
@@ -65,9 +75,9 @@ module.exports = {
     },
     async adminUpdateEditor(req, res) {
         try {
-            const editorId = req.query.editorId
+            const editorId = req.params.editorId
             var status = req.query.status
-            await Editor.findOneAndUpdate({ _id: editorId },{status})
+            await Editor.findOneAndUpdate({ _id: editorId }, { status })
             return res.json({ message: "editor updated successfully" })
         } catch (error) {
             return res.status(500).send({ error: error.message })
@@ -91,7 +101,7 @@ module.exports = {
             return res.json({ error: error.message })
         }
     },
-    
+
     async adminChangePassword(req, res) {
         try {
             const currentPassword = req.body.currentPassword

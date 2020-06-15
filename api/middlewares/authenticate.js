@@ -32,7 +32,7 @@ module.exports = {
                 return res.json({ error: "invalid token" })
             }
             const editor = await Editor.findOne({ _id: payload._id, jsonWebToken: token })
-            if (!editor) return res.json({ error: "no editor account found" })
+            if (!editor) return res.json({ error: "invalid token" })
             req.editor = editor
             next()
         } catch (error) {
@@ -48,7 +48,7 @@ module.exports = {
                 return res.json({ error: "invalid token" })
             }
             const customer = await Customer.findOne({ _id: payload._id, jsonWebToken: token })
-            if (!customer) return res.json({ error: "no customer account found" })
+            if (!customer) return res.json({ error: "invalid token" })
             req.customer = customer
             next()
         } catch (error) {
