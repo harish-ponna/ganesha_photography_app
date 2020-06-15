@@ -1,5 +1,5 @@
-# digital-studio-rjy
-# Digital Studio Project ( Rajahmundry )
+                              # Not Updated
+## Ganesh photography api
 
 * All the admin routes starts with api/admin.
 * All the customer routes starts with api/customer.
